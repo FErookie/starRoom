@@ -20,6 +20,6 @@ exports.checkUser = async function (nickname, password){
             passwordHash: passwordM
         }
     }).then(data=>{
-        return data[0] === undefined;
+        return data[0] === undefined ? false : data[0].id;
     })
 };

@@ -9,6 +9,11 @@ exports.register = async (ctx) => {
     let data = ctx.request.body;
     let imageUrl = "";
     const file = ctx.request.header.file;
+    let status = await account.checkUser(data.nickname, data.password);
+    if(status !== false){
+       ctx.returns(returns.code.PARAM_ERROR, "已经注册过 请登录", null);
+       return;
+    }
     if(file === undefined){
         console.log("这是一个使用默认头像的小伙子");
         await account.addUser(data.nickname, data.password);
@@ -29,6 +34,6 @@ exports.login = async (ctx) => {
     ctx.checkBody("password").notEmpty();
     let data = ctx.request.body;
     let res = await account.checkUser(data.nickname, data.password);
-    res === true ? ctx.returns(returns.code.PARAM_ERROR, "用户名或密码错误", "param error") : ctx.returns(returns.code.SUCCESS, "登录成功", null);
+    ctx.returns(returns.code.SUCCESS, res , null);//注册成功的时候会把用户的id返回回去
 };
 //想了想暂时不加token 也不做登陆状态持续化

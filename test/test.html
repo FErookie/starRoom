@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+        .chat {
+            float: left;
+            padding: 1em 1em 0 2em;
+            height: 100%;
+            width: 500px;
+            border-right: 1px solid #DA4;
+            overflow-y: scroll;
+        }
+        .inputpart {
+            float: left;
+            margin-left: 10px;
+        }
+        #userName {
+            font-size: 20px;
+            color: rgb(3, 57, 109);
+        }
+    </style>
+</head>
+<body>
+<div class="chat">
+    <ul id="messages">
+        //聊天信息
+    </ul>
+</div>
+<div class="inputpart">
+    <div id="userName">
+        //用来展示用户id
+    </div>
+    <form action="">
+        <input autocomplete="off" id="inpB" /><button id="say">Send</button>
+    </form>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/socket.io/2.3.0/socket.io.dev.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    $(function () {
+        var userName = '';
+        while ($('#userName').text().trim() === '') {
+            //设置用户名
+            let promptName = prompt("请设置你的昵称", "")
+            userName = promptName ? promptName + '：' : '未命名：';
+            $('#userName').text(userName);
+        }
+        let socket = io("ws://localhost:3000");
+        socket.on('connect', function () {
+            socket.emit('join', userName)
+        })
+        // 监听系统消息
+        socket.on('sys', function (sysMsg) {
+            var message = '<div class="sysMsg">' + sysMsg + '</div>';
+            $('#messages').append(message);
+        });
+        $('#say').click((e) => {
+            e.preventDefault()
+            socket.send($("#inpB")[0].value)
+            $("#inpB")[0].value = ''
+        })
+        socket.on('msg', function (userName, userColor, msg) {
+            var message = ' <div class="message">' +
+                `<span class="user" style="font-size:1.5em; color: #${userColor}">` + 	             userName + '</span>' +
+                '  <span class="msg">' + msg + '</span>' +
+                '</div>';
+            $('#messages').append(message);
+            // 滚动条保持最下方
+            $('#messages').scrollTop($('#messages')[0].scrollHeight);
+        });
+    })
+</script>
+</html>

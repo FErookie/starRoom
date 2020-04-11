@@ -3,16 +3,18 @@ const socketio = require('socket.io');
 const http = require('http');
 const server = http.createServer(app.callback());
 const io = socketio(server);
-
-io.on('connection', client => {
-    client.on('message', async function (message) {
+const {addMessage} = require('../services/messages');
+io.on('connection', function (socket) {
+    console.log('a user connected')
+    let userID = ''
+    socket.on('join', function (userName) {
+        userID = userName;
+        io.emit('sys', userID + '已加入房间');
+        console.log(userID + '加入了');
     });
-
-    client.on('xxx', async function (message) {
-    });
-
-    client.on('disconnect', async function () {
-    });
-});
+    socket.on('message', function (msg){
+        io.emit('msg',  msg);
+    })
+})
 
 module.exports = server;
