@@ -1,5 +1,6 @@
 const app = require('../index');
 const socketio = require('socket.io');
+const http = require('http');
 const server = http.createServer(app.callback());
 const io = socketio(server);
 

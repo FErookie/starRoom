@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const utils = require('../libs/utils');
+const utils = require('../lib/utils');
 
 const router = new Router();
 
