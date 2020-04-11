@@ -1,0 +1,21 @@
+{
+  "name": "starroom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node ./bin/www.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ioredis": "^4.16.1",
+    "koa": "^2.11.0",
+    "koa-router": "^8.0.8",
+    "koa-static": "^5.0.0",
+    "pg": "^8.0.2",
+    "sequelize": "^5.21.6",
+    "socket.io": "^2.3.0"
+  }
+}
