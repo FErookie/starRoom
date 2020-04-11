@@ -2,7 +2,7 @@ const db = require('../db/index');
 const { user } = db.models;
 const crypto = require('crypto');
 
-exports.addUser = async function addUser(nickname, password, headImageUrl ){
+exports.addUser = async function (nickname, password, headImageUrl ){
     let passwordM = crypto.createHash('md5').update(password).digest('hex');
     user.create({
         nickname: nickname,
@@ -12,7 +12,7 @@ exports.addUser = async function addUser(nickname, password, headImageUrl ){
     //考虑一下  其实可能存base64也可以
 };
 
-exports.checkUser = async function checkUser(nickname, password){
+exports.checkUser = async function (nickname, password){
     let passwordM = crypto.createHash('md5').update(password).digest('hex');
     return user.findAll({
         where: {
