@@ -11,6 +11,10 @@ const app = new Koa();
 middlewares.forEach((middleware) => {
     app.use(middleware);
 });
+app.use(async (ctx, next) => {
+  ctx.set('Access-Control-Allow-Origin', '*');
+  await next();
+ });
 app.use(xmlParser({
     xmlOptions: {
         explicitArray: false
