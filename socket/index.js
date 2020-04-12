@@ -13,7 +13,10 @@ io.on('connection', function (socket) {
         console.log(userID + '加入了');
     });
     socket.on('message', function (msg){
-        io.emit('msg',  msg);
+        let rsg = msg;
+        io.broadcast.emit('msg', rsg);
+        console.log(rsg);
+        addMessage(userID, rsg);
     })
 })
 

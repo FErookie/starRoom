@@ -1,14 +1,14 @@
 // 存储和查询的话就当是历史记录好了 也就是个增加和查询 因为查历史记录实际上是整个表做查询 不必要到具体哪个人
 const db = require('../db/index');
-const {user, message} = db;
+const {user, message} = db.models;
 
 exports.addMessage = async function (userid, content, asImage = '') {
-    let user = await user.findOne({
+    let User = await user.findOne({
         where: {
             id: userid
         }
     });
-    await user.createMessage({
+    await User.createMessage({
         content: content,
         asImage: asImage
     });

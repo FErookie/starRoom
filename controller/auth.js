@@ -16,8 +16,9 @@ exports.register = async (ctx) => {
     }
     if(file === undefined){
         console.log("这是一个使用默认头像的小伙子");
-        await account.addUser(data.nickname, data.password);
-        ctx.returns(returns.code.SUCCESS, "注册成功" , null);
+        let re = await account.addUser(data.nickname, data.password);
+        console.log(re + "!!拜托了这对我很重要");
+        ctx.returns(returns.code.SUCCESS, re, null);
     }else{
         const reader = fs.createReadStream(file.path);	// 创建可读流
         const ext = file.name.split('.').pop();		// 获取上传文件扩展名
@@ -25,14 +26,15 @@ exports.register = async (ctx) => {
         const upStream = fs.createWriteStream(`../public/img/${randomNumber}.${ext}`);		// 创建可写流
         reader.pipe(upStream);	// 可读流通过管道写入可写流
         imageUrl = baseUrl + `/static/image/${randomNumber}.${ext}`;
-        await account.addUser(data.nickname, data.password);
-        ctx.returns(returns.code.SUCCESS, "注册成功" , null);
+        let re = await account.addUser(data.nickname, data.password);
+        ctx.returns(returns.code.SUCCESS, re , null);
     }
 };
 exports.login = async (ctx) => {
     ctx.checkBody("nickName").notEmpty();
     ctx.checkBody("password").notEmpty();
     let data = ctx.request.body;
+    console.log(1);
     let res = await account.checkUser(data.nickname, data.password);
     ctx.returns(returns.code.SUCCESS, res , null);//注册成功的时候会把用户的id返回回去
 };

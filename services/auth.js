@@ -4,11 +4,13 @@ const crypto = require('crypto');
 
 exports.addUser = async function (nickname, password, headImageUrl ){
     let passwordM = crypto.createHash('md5').update(password).digest('hex');
-    user.create({
+    let res = await user.create({
         nickname: nickname,
         passwordHash: passwordM,
         headImageUrl: headImageUrl
     });
+    console.log(res);
+    return res.dataValues;
     //考虑一下  其实可能存base64也可以
 };
 
@@ -20,6 +22,6 @@ exports.checkUser = async function (nickname, password){
             passwordHash: passwordM
         }
     }).then(data=>{
-        return data[0] === undefined ? false : data[0].id;
+        return data[0] === undefined ? false : data[0].dataValues;
     })
 };

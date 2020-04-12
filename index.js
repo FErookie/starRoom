@@ -5,16 +5,25 @@ const router = require('./routers/index');
 const middlewares = require('./middlewares/index');
 const xmlParser = require('koa-xml-body');
 const path = require('path');
+const cors = require('koa2-cors'); //跨域处理
 const staticServer = require('koa-static');
 const staticPath = './static';
 const app = new Koa();
 middlewares.forEach((middleware) => {
     app.use(middleware);
 });
-app.use(async (ctx, next) => {
-  ctx.set('Access-Control-Allow-Origin', '*');
-  await next();
- });
+app.use(
+    cors({
+        origin: function(ctx) {
+           return '*';
+        },
+        maxAge: 5,
+        credentials: true,
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        exposeHeaders: ['WWW-Authenticate', 'Server-Authorization']
+    })
+);
 app.use(xmlParser({
     xmlOptions: {
         explicitArray: false
