@@ -3,7 +3,7 @@ const returns = require('../lib/return');
 const messageService = require('../services/messages');
 exports.queryMessage = async(ctx) => {
     ctx.checkBody("offset").notEmpty();
-    let data = ctx.body;
+    let data = ctx.request.body;
     let res = await messageService.queryMessage(data.offset, data.limit);
     ctx.returns(returns.code.SUCCESS, res, null);
 };

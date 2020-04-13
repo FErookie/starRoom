@@ -6,17 +6,18 @@ const io = socketio(server);
 const {addMessage} = require('../services/messages');
 io.on('connection', function (socket) {
     console.log('a user connected')
-    let userID = ''
-    socket.on('join', function (userName) {
+    let userID = '';
+    let nickname = '';
+    socket.on('join', function (userName, name) {
         userID = userName;
+        nickname = name;
         io.emit('sys', userID + '已加入房间');
         console.log(userID + '加入了');
     });
     socket.on('message', function (msg){
-        let rsg = msg;
-        io.broadcast.emit('msg', rsg);
-        console.log(rsg);
-        addMessage(userID, rsg);
+        io.sockets.emit('message', nickname , msg);
+        console.log(msg);
+        addMessage(userID, msg, nickname);
     })
 })
 

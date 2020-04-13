@@ -23,6 +23,7 @@
                 </div>
             </el-dialog>
             <el-button round @click="registerdialogFormVisible = true">注册</el-button>
+            <el-button round @click="getHistory">查询历史记录</el-button>
             <el-dialog title="注册" :visible.sync="registerdialogFormVisible" center>
 
                 <el-form>
@@ -58,15 +59,16 @@
         </el-container>
     </div>
 </template>
-
 <script>
     import axios from "axios";
+    import io from "socket.io-client";
     export default {
         name: "chatRoom",
         data() {
             return {
                 username: "游客",
                 id:"",
+                socket: null,
                 avatraUrl: "",
                 registerdialogFormVisible: false,
                 dialogFormVisible: false,
@@ -75,18 +77,52 @@
                 password: "",
                 canEmit: false,
                 messages: [],
+                queryCount: 1
             }
         },
-        computed:{
+        computed: {
+        },
+        mounted(){
+          this.initSocket();
         },
         methods:{
             emitMessage(){
                 if(!this.canEmit){
                     return false;
                 }else {
-                    this.$socket.emit('message', this.input);
+                    this.socket.emit('message', this.input);
                     this.input = '';
+
                 }
+            },
+            getHistory(){
+                let data = {
+                    "offset": this.queryCount * 10,
+                };
+                axios.post(`${this.$store.state.url}/query`, data)
+                    .then(res => {
+                        console.log(res);
+                        if(res.data.code === 200){
+                            this.messages = res.data.data.concat(this.messages);
+                        }
+                    });
+                this.queryCount++;
+            },
+            initSocket(){
+                console.log(1);
+                const socket = io("http://localhost:3000");
+                this.socket = socket;
+                this.socket.emit('connection', function (data) {
+                    console.log(data);
+                });
+                let _this = this;
+                this.socket.on('message', function (nickname , content) {
+                    _this.messages.push({
+                        username: nickname,
+                        content: content
+                    });
+                })
+
             },
             register(){
                 let data = {
@@ -102,7 +138,7 @@
                             this.id = res.data.data.id;
                             this.nickname = res.data.data.nickname;
                             this.avatraUrl = res.data.data.headImageUrl;
-                            this.$socket.emit('join', this.id);
+                            this.socket.emit("join", this.id, this.nickname);
                         }else{
                             alert("您已经注册过了 请登录");
                         }
@@ -122,16 +158,11 @@
                             this.id = res.data.data.id;
                             this.nickname = res.data.data.nickname;
                             this.avatraUrl = res.data.data.headImageUrl;
-                            this.$socket.emit('join', this.id);
+                            this.socket.emit("join", this.id,  this.nickname);
                         }else{
                             alert("密码或用户名错误 登陆gg");
                         }
                     })
-            }
-        },
-        sockets:{
-            msg(data){
-                this.messages.push(data);
             }
         },
         watch:{

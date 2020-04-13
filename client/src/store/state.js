@@ -1,6 +1,6 @@
 //基本逻辑是 用户和好友的聊天是一对一聊天 临时房间 关闭之后就会丢失（那这个聊天数据我其实没必要存在数据库 存在localstorge就可以） 而群组是永久的房间 关闭之后也不会丢失
 export default {
-    url: "http://localhost:3000",
+    url: " http://star.ngrok2.xiaomiqiu.cn",
     user:{
         name: "",
         id: "",

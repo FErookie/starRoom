@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         asImage: {
             type: DataTypes.TEXT,
             defaultValue: ''
-        }
+        },
+        nickname: {
+            type: DataTypes.STRING(32),
+            defaultValue: '游客'
+        },
     })
 };

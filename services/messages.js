@@ -2,7 +2,7 @@
 const db = require('../db/index');
 const {user, message} = db.models;
 
-exports.addMessage = async function (userid, content, asImage = '') {
+exports.addMessage = async function (userid, content, nickname ,asImage = '') {
     let User = await user.findOne({
         where: {
             id: userid
@@ -10,6 +10,7 @@ exports.addMessage = async function (userid, content, asImage = '') {
     });
     await User.createMessage({
         content: content,
+        nickname: nickname,
         asImage: asImage
     });
 };
@@ -23,5 +24,14 @@ exports.queryMessage = async function (offset, limit) {
         offset: offset,
         limit: limit
     });
-    return res;
+    console.log(res);
+    let rres = [];
+    for(let element of res){
+        let data = element.dataValues;
+        rres.push({
+            username: data.nickname,
+            content: data.content
+        })
+    }
+    return rres;
 };
